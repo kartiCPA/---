@@ -216,7 +216,9 @@
   .score-parts .pl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
   .score-caption{max-width:520px;margin:6px auto 0;color:var(--wine-d);font-size:15px;font-style:italic}
   .score-sub{margin:0 auto 10px;color:var(--muted);font-size:15px}
-  .score-ring{width:190px;height:190px;margin:8px auto 18px;filter:drop-shadow(0 6px 16px rgba(0,0,0,.45));transition:filter .2s}
+  .ring-wrap{width:190px;height:190px;margin:8px auto 18px;border-radius:50%;
+    box-shadow:0 10px 26px rgba(0,0,0,.35);transition:box-shadow .3s}
+  .score-ring{display:block;width:100%;height:100%}
   .spinRing{transform-box:fill-box;transform-origin:center;animation:spin 1.1s linear infinite}
   .verdict-badge{display:inline-block;padding:10px 26px;border-radius:30px;font-weight:600;
     font-size:16px;margin-bottom:12px;color:#1a1014;letter-spacing:.5px}
@@ -281,10 +283,25 @@
   .lead h3{font-size:26px;margin:0 0 8px;justify-content:center}
   .lead p{color:#d8c8cf;font-size:15.5px;margin:0 auto 18px;max-width:440px;line-height:1.5}
   .lead .field{text-align:left;margin-bottom:12px}
+  .ba-row{display:flex;gap:10px;max-width:420px;margin:4px auto 14px}
+  .ba{flex:1;position:relative}
+  .ba img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:14px;display:block;
+    border:1px solid var(--line)}
+  .ba.after img{border-color:var(--wine);box-shadow:var(--glow)}
+  .ba span{position:absolute;top:9px;left:9px;background:rgba(13,10,12,.72);color:var(--ink);
+    padding:4px 11px;border-radius:20px;font-size:10.5px;letter-spacing:1.5px;
+    text-transform:uppercase;font-weight:600;backdrop-filter:blur(4px)}
+  .ba.after span{background:var(--grad-wine);color:#1a1014}
+  .ba-quote{font-family:'Cormorant Garamond',serif;font-size:21px;font-style:italic;
+    color:var(--wine-d);margin:0 auto 18px;max-width:420px;line-height:1.35}
   .lead-note{color:var(--muted);font-size:12.5px;margin-top:10px}
   .lead-err{color:var(--red);font-size:14px;margin-top:10px;display:none}
   .lead-ok{padding:14px 0 6px}
   .lead-ok .big{font-size:44px;line-height:1;margin-bottom:10px}
+  .share-box{background:linear-gradient(180deg,#1e1620,#181219);border:1px solid var(--line);
+    border-radius:16px;padding:22px 20px;text-align:center}
+  .share-box h3{font-size:23px;margin:0 0 6px;justify-content:center}
+  .share-box p{color:var(--muted);font-size:14.5px;margin:0 auto 14px;max-width:400px;line-height:1.5}
   .outro{text-align:center;font-family:'Cormorant Garamond',serif;font-size:26px;
     color:var(--wine-d);margin:6px 0 10px;font-weight:600}
   .outro-sub{text-align:center;font-style:italic;color:#c3b4ba;font-size:15.5px;
@@ -485,6 +502,25 @@ function resetState(){
 }
 resetState();
 
+/* ---------- PROGRESS PERSISTENCE (вышла — вернулась на то же место) ---------- */
+const LS_KEY='muaQuizProgress';
+function saveProgress(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(
+    {idx, name:state.name, colortype:state.colortype, bag:state.bag, skills:state.skills})); }catch(e){}
+}
+function loadProgress(){
+  try{
+    const d=JSON.parse(localStorage.getItem(LS_KEY));
+    if(!d || typeof d.idx!=='number') return false;
+    state.name=d.name||''; state.colortype=d.colortype||null;
+    if(d.bag) BAG.forEach(b=>{ if(d.bag[b.key]) state.bag[b.key]=d.bag[b.key]; });
+    if(d.skills) SKILLS.forEach(s=>{ const v=+d.skills[s.key]; if(v>=1&&v<=5) state.skills[s.key]=v; });
+    idx=Math.min(Math.max(0, d.idx), SCREENS.length-1);
+    return true;
+  }catch(e){ return false; }
+}
+function clearProgress(){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
+
 /* ---------- SCREENS (плоский список карточек) ---------- */
 const SCREENS = [{type:'intro'},{type:'ctype'}];
 BAG.forEach((b,i)=>SCREENS.push({type:'bag', item:b, i}));
@@ -523,6 +559,7 @@ function renderCard(dir){ // dir: 1 вперёд, -1 назад, 0 без ани
   host.innerHTML=''; host.appendChild(card);
   bindCard(card, sc);
   updateChrome();
+  saveProgress();
   if(dir!==0) requestAnimationFrame(()=>requestAnimationFrame(()=>{
     card.classList.remove('enter-r','enter-l');
   }));
@@ -687,6 +724,7 @@ function bindCard(card, sc){
         setTimeout(goNext, 380);
       }else{
         tick(720);
+        saveProgress();
         phase2.classList.remove('hidden');
         card.querySelectorAll('[data-fit]').forEach(x=>x.classList.remove('picked','picked-dim'));
         if(s.fit) card.querySelector(`[data-fit="${s.fit}"]`).classList.add('picked-dim');
@@ -714,6 +752,7 @@ function bindCard(card, sc){
       range.style.setProperty('--p',(v-1)/4*100+'%');
       range.style.setProperty('--c',VALCOL[v-1]);
       range.style.setProperty('--cg',VALGLOW[v-1]);
+      saveProgress();
       tick(360+v*70,0.045,0.05);
     };
     card.querySelector('#slNext').onclick=()=>{ tick(620); goNext(); };
@@ -816,6 +855,7 @@ function runCalc(done){
   setTimeout(()=>{ov.classList.remove('on');done();}, 3150);
 }
 function showResult(){
+  clearProgress();
   document.getElementById('stage').classList.add('hidden');
   document.querySelector('.stagebar .backbtn').classList.add('hid');
   stageLbl.textContent='Твой результат';
@@ -981,7 +1021,7 @@ function renderResult(){
   const ct=COLORTYPES.find(c=>c.key===state.colortype);
   const hi=state.name?`${state.name}, вот`:'Вот';
   const C=2*Math.PI*72;
-  const ring=`<svg class="score-ring" viewBox="0 0 180 180">
+  const ring=`<div class="ring-wrap" id="ringWrap"><svg class="score-ring" viewBox="0 0 180 180">
     <circle cx="90" cy="90" r="72" fill="none" stroke="#2c2228" stroke-width="13"/>
     <circle class="spinRing" id="spinRing" cx="90" cy="90" r="72" fill="none" stroke="#f4eaee" stroke-width="13"
       stroke-linecap="round" stroke-dasharray="${(C*0.28).toFixed(1)} ${(C*0.72).toFixed(1)}"/>
@@ -989,7 +1029,7 @@ function renderResult(){
       stroke-dasharray="${C}" stroke-dashoffset="${C}" transform="rotate(-90 90 90)" style="opacity:0"/>
     <text id="scoreNum" x="90" y="90" text-anchor="middle" dominant-baseline="middle" font-size="22" letter-spacing="1" font-family="'Jost',sans-serif" fill="#9c8b8f">Оценка</text>
     <text id="scoreUnit" x="90" y="108" text-anchor="middle" font-size="12" letter-spacing="2" fill="#9c8b8f" style="opacity:0">ИЗ 5.0</text>
-  </svg>`;
+  </svg></div>`;
 
   const partVal=(v,id)=>v==null?'<span class="pv" style="color:var(--muted)">—</span>'
     :`<span class="pv" id="${id}" style="color:${scoreColor(v)}">0.0</span>`;
@@ -1088,6 +1128,11 @@ function renderResult(){
   // развёрнутая лид-форма с питчем программы
   html+=`<div class="res-block noprint"><div class="lead" id="leadBox">
       <h3>💬 Не хочешь разбираться с этим сама?</h3>
+      <div class="ba-row">
+        <div class="ba"><img src="before.jpg" alt="я когда-то" loading="lazy"><span>я когда-то</span></div>
+        <div class="ba after"><img src="after.jpg" alt="я сейчас" loading="lazy"><span>я сейчас</span></div>
+      </div>
+      <p class="ba-quote">«Нет таланта в макияже — есть понимание и техника»</p>
       <p>Если не хочешь решать это самостоятельно — или не знаешь, как, — есть онлайн-программа, где мы закроем все пункты из твоей диагностики вместе, шаг за шагом.</p>
       <ul class="intro-list" style="text-align:left;max-width:420px;margin:0 auto 20px">
         <li>Закроешь каждый пункт из списка выше — от косметички до техники</li>
@@ -1109,6 +1154,13 @@ function renderResult(){
       <p class="lead-err" id="leadErr"></p>
       <p class="lead-note">Никакого спама — только по твоей диагностике.</p>
     </div></div>`;
+
+  // поделиться квизом с подругой (ссылка чистая — у неё диагностика начнётся с нуля)
+  html+=`<div class="res-block noprint"><div class="share-box">
+    <h3>🎁 Поделись с подругой</h3>
+    <p>Пусть тоже пройдёт диагностику — интересно же, какой результат получится у неё.</p>
+    <button class="btn btn-ghost" id="shareBtn">Поделиться диагностикой</button>
+  </div></div>`;
 
   // тёплое завершение
   html+=`<div class="res-block noprint">
@@ -1137,6 +1189,21 @@ function renderResult(){
   };
   recomputePotential();
   bindLead({avg, skillScore, cosmScore, missing, unsure, crit});
+  const shareBtn=document.getElementById('shareBtn');
+  if(shareBtn) shareBtn.onclick=async()=>{
+    tick(680);
+    const url=location.origin+location.pathname;  // чистая ссылка — квиз с начала
+    const data={title:'Диагностика макияжа',
+      text:'Я прошла диагностику макияжа — интересно, какой результат получится у тебя 💄', url};
+    try{
+      if(navigator.share) await navigator.share(data);
+      else{
+        await navigator.clipboard.writeText(data.text+'\n'+url);
+        shareBtn.textContent='Ссылка скопирована ✓';
+        setTimeout(()=>shareBtn.textContent='Поделиться диагностикой', 2200);
+      }
+    }catch(e){} // отмена шэринга — не ошибка
+  };
 
   if(cosmScore!=null) animateNumber(document.getElementById('pvCosm'), cosmScore, 2000);
   animateNumber(document.getElementById('pvSkill'), skillScore, 2000);
@@ -1173,7 +1240,7 @@ function animateNumber(el, target, dur){
 function animateScore(avg){
   const num=document.getElementById('scoreNum'), arc=document.getElementById('scoreArc');
   if(!num||!arc) return;
-  const ringSvg=document.querySelector('.score-ring'), spin=document.getElementById('spinRing'),
+  const ringWrap=document.getElementById('ringWrap'), spin=document.getElementById('spinRing'),
         unit=document.getElementById('scoreUnit');
   setTimeout(()=>{
     if(spin) spin.style.display='none';
@@ -1190,7 +1257,7 @@ function animateScore(avg){
       const cur=avg*e, col=scoreColor(cur);
       num.textContent=cur.toFixed(1); num.setAttribute('fill',col);
       arc.setAttribute('stroke',col); arc.setAttribute('stroke-dashoffset', C*(1-target*e));
-      if(ringSvg) ringSvg.style.filter=`drop-shadow(0 0 16px ${col}bb) drop-shadow(0 8px 22px ${col}66)`;
+      if(ringWrap) ringWrap.style.boxShadow=`0 0 24px ${col}55, 0 10px 28px ${col}33`;
       if(k<1) requestAnimationFrame(f);
     })(t0);
   }, 2200);
@@ -1258,6 +1325,7 @@ function bindLead(ctx){
 /* ---------- RESTART ---------- */
 document.getElementById('restartBtn').onclick=()=>{
   resetState();
+  clearProgress();
   idx=0;
   history.replaceState(null,'',location.pathname+location.search);
   document.getElementById('resultWrap').classList.add('hidden');
@@ -1301,7 +1369,7 @@ document.addEventListener('touchend',e=>{
 
 /* ---------- INIT ---------- */
 if(decodeResultHash()) showResult();
-else renderCard(0);
+else { loadProgress(); renderCard(0); }
 </script>
 </body>
 </html>
