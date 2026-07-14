@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Диагностика макияжа</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,7 +32,8 @@
     --grad-wine:linear-gradient(135deg,#f3a4bd,#e87aa0);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;padding:0}
+  html,body{margin:0;padding:0;touch-action:pan-y;-ms-touch-action:pan-y}
+  button,input,.ctype,.abtn{touch-action:manipulation}
   body{
     font-family:'Jost','Segoe UI',sans-serif;
     color:var(--ink);
@@ -1285,6 +1286,18 @@ document.getElementById('soundToggle').onclick=()=>{
   document.getElementById('soundToggle').textContent=soundOn?'🔊':'🔈';
   if(soundOn) tick(660);
 };
+
+/* ---------- NO ZOOM (iOS Safari игнорирует метатег) ---------- */
+['gesturestart','gesturechange','gestureend'].forEach(ev=>
+  document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
+let lastTouch=0;
+document.addEventListener('touchend',e=>{
+  const now=Date.now();
+  // двойной тап по пустому месту = зум → глушим; кнопки и поля не трогаем
+  if(now-lastTouch<300 && !e.target.closest('button,input,label,a,.ctype'))
+    e.preventDefault();
+  lastTouch=now;
+},{passive:false});
 
 /* ---------- INIT ---------- */
 if(decodeResultHash()) showResult();
