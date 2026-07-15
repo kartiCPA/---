@@ -304,6 +304,9 @@
   .pot span{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;line-height:1}
   .pot small{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
   .pot-arrow{font-size:30px;color:var(--wine);font-weight:300}
+  .pot.far,.pot-arrow.far{display:none}
+  .pot-arrow.far.show{display:block;animation:phaseIn .45s ease both}
+  .pot.far.show{display:flex;animation:phaseIn .45s ease both}
   .pot-lead{max-width:540px;margin:2px auto 0;color:var(--wine-d);font-size:15.5px;line-height:1.5}
   .check-all{margin-top:16px;border:none;background:var(--grad-wine);color:#1a1014;
     border-radius:30px;padding:14px 28px;font-size:15.5px;font-weight:600;cursor:pointer;
@@ -1192,6 +1195,8 @@ function renderResult(){
         <div class="pot"><span style="color:${scoreColor(avg)}">${avg.toFixed(1)}</span><small>сейчас</small></div>
         <div class="pot-arrow">→</div>
         <div class="pot"><span id="potVal" style="color:${scoreColor(avg)}">${avg.toFixed(1)}</span><small>через месяц</small></div>
+        <div class="pot-arrow far" id="potArrow2">→</div>
+        <div class="pot far" id="potFar"><span style="color:#3fa564">5.0</span><small>ещё через 1–2 мес</small></div>
       </div>
       <button id="checkAll" class="check-all">✨ Узнать оценку после исправлений</button>
     </div></div>`;
@@ -1286,6 +1291,9 @@ function recomputePotential(){
   const pot = total ? resAvg + (cap-resAvg)*(checked/total) : resAvg;
   const el=document.getElementById('potVal');
   if(el){ el.textContent=pot.toFixed(1); el.style.color=scoreColor(pot); }
+  // отметила хоть один пункт — показываем горизонт «ещё через 1–2 месяца → 5.0»
+  const far=document.getElementById('potFar'), farA=document.getElementById('potArrow2');
+  if(far){ far.classList.toggle('show', checked>0); farA.classList.toggle('show', checked>0); }
 }
 function scoreColor(v){
   if(v<1) return '#e5484d';
