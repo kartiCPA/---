@@ -33,7 +33,7 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0;touch-action:pan-y;-ms-touch-action:pan-y}
-  button,input,.ctype,.abtn{touch-action:manipulation}
+  button,input,.ctype,.abtn,.chip,.clps-head,.fix{touch-action:manipulation}
   body{
     font-family:'Jost','Segoe UI',sans-serif;
     color:var(--ink);
@@ -1449,7 +1449,7 @@ let lastTouch=0;
 document.addEventListener('touchend',e=>{
   const now=Date.now();
   // двойной тап по пустому месту = зум → глушим; кнопки и поля не трогаем
-  if(now-lastTouch<300 && !e.target.closest('button,input,label,a,.ctype'))
+  if(now-lastTouch<300 && !e.target.closest('button,input,label,a,.ctype,.chip,.clps-head,.ba'))
     e.preventDefault();
   lastTouch=now;
 },{passive:false});
