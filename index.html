@@ -305,10 +305,17 @@
   .pot small{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
   .pot-arrow{font-size:30px;color:var(--wine);font-weight:300}
   .pot-lead{max-width:540px;margin:2px auto 0;color:var(--wine-d);font-size:15.5px;line-height:1.5}
-  .check-all{margin-top:16px;border:1.5px solid var(--wine);background:transparent;color:var(--wine-d);
-    border-radius:30px;padding:10px 24px;font-size:14.5px;font-weight:500;cursor:pointer;
-    font-family:inherit;transition:.2s}
-  .check-all:hover{background:var(--wine);color:#1a1014}
+  .check-all{margin-top:16px;border:none;background:var(--grad-wine);color:#1a1014;
+    border-radius:30px;padding:14px 28px;font-size:15.5px;font-weight:600;cursor:pointer;
+    font-family:inherit;transition:.2s;box-shadow:0 6px 22px rgba(238,143,171,.45);
+    animation:ctaPulse 2.2s ease-in-out infinite}
+  .check-all:hover{transform:translateY(-1px)}
+  .check-all.done{background:transparent;border:1.5px solid var(--line);color:var(--muted);
+    box-shadow:none;animation:none;font-weight:500;padding:10px 24px;font-size:14px}
+  @keyframes ctaPulse{
+    0%,100%{transform:scale(1);box-shadow:0 6px 22px rgba(238,143,171,.45)}
+    50%{transform:scale(1.045);box-shadow:0 10px 34px rgba(238,143,171,.75)}
+  }
 
   /* lead form */
   .lead{background:linear-gradient(180deg,#241a27,#181219);border:1px solid rgba(244,169,192,.25);
@@ -501,16 +508,18 @@ const SKILLS = [
   {key:'correct', label:'Коррекция', hint:'Скульптор, румяна, хайлайтер — используешь?'}
 ];
 
+/* уровни описаны конкретным поведением, а не оценкой —
+   так сложнее переоценить себя на самодиагностике */
 const SKILL_LABELS = {
-  variety:['Один образ на всё','Пара привычных','Несколько, но похожи','Хороший набор','Под любой повод'],
-  mistakes:['Постоянно ошибаюсь','Часто промахи','Иногда косячу','Редкие огрехи','Почти без ошибок'],
-  kit:['Почти пусто','Много пробелов','База есть','Почти всё есть','Полный набор'],
-  speed:['Очень долго','Дольше, чем хочу','Нормально','Довольно быстро','Быстро и легко'],
-  arrows:['Совсем не выходят','С трудом','Через раз','Обычно ровно','Идеально и ровно'],
-  clean:['Заметные границы','Часто неаккуратно','Сносно','Аккуратно','Безупречно'],
-  adapt:['Не повторить','Выходит с трудом','Иногда получается','Обычно повторяю','Легко под себя'],
-  tone:['Лежит плохо','Бывает неровно','Нормально','Ровно','Идеально, в цвет'],
-  correct:['Не использую','Чуть-чуть','Базово','Уверенно','Профи-объём']
+  variety:['Один на все случаи','Два похожих','Есть, но без вечернего','День и вечер уверенно','Любой образ под повод'],
+  mistakes:['Каждый раз что-то не так','Часто ошибаюсь','Иногда косячу','Редко, по мелочи','Почти никогда'],
+  kit:['Пара средств','Меньше половины базы','База с пробелами','Почти всё есть','Всё есть и подходит'],
+  speed:['Больше часа','40–60 минут','25–40 минут','15–25 минут','До 15 минут'],
+  arrows:['Не берусь за них','Стираю и переделываю','Ровно с 3-й попытки','Ровно, но долго','С первого раза ровно'],
+  clean:['Пятна и границы','Часто грязно','Вблизи видны огрехи','Чисто, но не идеал','Чисто даже вблизи'],
+  adapt:['Совсем не выходит','Выходит непохоже','Похоже, но «не то»','Со 2–3 попытки','С первого раза'],
+  tone:['Маска или пятна','Часто неровно','К вечеру плывёт','Ровно полдня','Ровно весь день'],
+  correct:['Не пользуюсь','Наношу наугад','Базово, не всегда чисто','Уверенно, по одной схеме','Под свою форму лица']
 };
 
 const RECS = {
@@ -725,7 +734,7 @@ function skillsTpl(){
   return `
     <span class="qtag">Навыки</span>
     <h2>Оцени себя честно</h2>
-    <p class="sub" style="margin-bottom:14px">1 — совсем нет, 5 — на максимум. Двигай ползунки — колесо меняется вместе с тобой.</p>
+    <p class="sub" style="margin-bottom:14px">Двигай ползунки и выбирай не «как ощущается», а как есть на деле — план будет точнее. Колесо меняется вместе с тобой.</p>
     <div class="wheel-sticky">
       <svg id="radar" viewBox="0 0 320 300"></svg>
       <div class="wheel-react" id="wheelReact"></div>
@@ -1184,7 +1193,7 @@ function renderResult(){
         <div class="pot-arrow">→</div>
         <div class="pot"><span id="potVal" style="color:${scoreColor(avg)}">${avg.toFixed(1)}</span><small>через месяц</small></div>
       </div>
-      <button id="checkAll" class="check-all">Отметить всё</button>
+      <button id="checkAll" class="check-all">✨ Узнать оценку после исправлений</button>
     </div></div>`;
 
   // развёрнутая лид-форма с питчем программы
@@ -1240,7 +1249,8 @@ function renderResult(){
     const boxes=[...document.querySelectorAll('.fixcb')];
     const turnOn=boxes.some(cb=>!cb.checked);
     boxes.forEach(cb=>{cb.checked=turnOn; cb.closest('li').classList.toggle('committed',turnOn);});
-    allBtn.textContent=turnOn?'Снять всё':'Отметить всё';
+    allBtn.textContent=turnOn?'Снять отметки':'✨ Узнать оценку после исправлений';
+    allBtn.classList.toggle('done', turnOn);
     recomputePotential(); tick(turnOn?780:430);
   };
   recomputePotential();
