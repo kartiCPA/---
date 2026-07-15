@@ -128,6 +128,34 @@
   @keyframes phaseIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   .qphase2 .qq{font-size:19px;font-weight:500;margin:0 0 13px}
 
+  /* checklist chips (косметичка) */
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .chip{border:1.5px solid var(--line);border-radius:14px;padding:12px 13px;cursor:pointer;
+    background:var(--card-2);transition:.15s;user-select:none;position:relative}
+  .chip:active{transform:scale(.97)}
+  .chip b{display:block;font-weight:500;font-size:15px;line-height:1.3;padding-right:20px}
+  .chip small{display:block;color:var(--muted);font-size:11.5px;line-height:1.3;margin-top:2px;font-weight:300}
+  .chip::after{content:"";position:absolute;top:10px;right:10px;width:19px;height:19px;border-radius:50%;
+    border:1.5px solid var(--line);transition:.15s;display:grid;place-items:center;font-size:11px;font-weight:700}
+  .chip.on{border-color:var(--wine);background:linear-gradient(180deg,var(--card-2),var(--rose-soft));box-shadow:var(--glow)}
+  .chip.on::after{content:"✓";background:var(--grad-wine);border-color:transparent;color:#1a1014}
+  .chip.good.on{border-color:var(--green);background:linear-gradient(180deg,var(--card-2),#15221a);
+    box-shadow:0 0 18px rgba(92,192,149,.35)}
+  .chip.good.on::after{background:var(--green);color:#fff}
+  .chip .base-tag{margin-left:6px}
+  .chips-count{text-align:center;color:var(--muted);font-size:13.5px;margin:12px 0 14px;min-height:20px}
+  .chips-count b{color:var(--wine-d)}
+
+  /* compact skill sliders (все на одной странице) */
+  .slrow{margin-bottom:15px}
+  .slrow .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:1px}
+  .slrow .top b{font-size:15.5px;font-weight:500}
+  .slrow .top span{font-size:12.5px;font-weight:600;transition:color .2s;text-align:right;white-space:nowrap}
+  .slhint{font-size:12px;color:var(--muted);margin:0 0 7px;font-weight:300;line-height:1.3}
+  .slrow input[type=range]{margin:0;height:8px}
+  .slrow input[type=range]::-webkit-slider-thumb{width:26px;height:26px;border-width:3px}
+  .slrow input[type=range]::-moz-range-thumb{width:26px;height:26px;border-width:3px}
+
   /* colortype cards */
   .grid2{display:grid;grid-template-columns:1fr;gap:11px}
   @media(min-width:430px){.grid2{grid-template-columns:1fr 1fr}}
@@ -189,16 +217,15 @@
 
   .hidden{display:none!important}
 
-  /* wheel screen */
-  .wheel-center{display:grid;place-items:center}
-  .wheel-react{margin:14px 0 6px;min-height:56px;text-align:center;color:var(--wine-d);
-    font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;opacity:0;transition:opacity .4s}
+  /* sticky wheel on skills screen */
+  .wheel-sticky{position:sticky;top:62px;z-index:5;display:flex;flex-direction:column;align-items:center;
+    background:linear-gradient(180deg,var(--card) 78%,transparent);
+    padding:2px 0 16px;margin:0 -6px 10px}
+  .wheel-sticky svg{width:min(238px,64vw);height:auto;display:block}
+  .wheel-react{margin:2px 0 0;min-height:24px;text-align:center;color:var(--wine-d);
+    font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;opacity:0;transition:opacity .4s;
+    line-height:1.3;padding:0 10px}
   .wheel-react.show{opacity:1}
-  .radar-legend{display:flex;gap:18px;justify-content:center;margin-top:10px;font-size:12.5px;flex-wrap:wrap}
-  .radar-legend div{display:flex;align-items:center;gap:8px;color:var(--muted)}
-  .radar-legend .ln{width:24px;height:9px;border-radius:3px;flex-shrink:0;
-    background:linear-gradient(90deg,#e5484d,#f2c14e,#4faf72)}
-  .radar-legend .ln.goal{height:0;background:none;border-top:2px dashed var(--gold-d)}
   #radar .vpoly{transform-box:fill-box;transform-origin:center;animation:breathe 4.5s ease-in-out infinite}
 
   /* ===== Result ===== */
@@ -311,6 +338,17 @@
   .res-actions .btn{padding:12px 22px;font-size:15px}
   .print-note{text-align:center;color:var(--muted);font-size:12.5px;margin-top:14px}
 
+  /* photo lightbox */
+  .ba img{cursor:zoom-in}
+  #photoLb{position:fixed;inset:0;z-index:60;display:none;place-items:center;
+    background:rgba(13,10,12,.9);backdrop-filter:blur(8px)}
+  #photoLb.on{display:grid;animation:fadeIn .25s}
+  #photoLb img{max-width:94vw;max-height:86vh;border-radius:18px;display:block;
+    box-shadow:0 24px 70px rgba(0,0,0,.6);cursor:zoom-out}
+  #lbClose{position:absolute;top:calc(14px + env(safe-area-inset-top));right:16px;width:44px;height:44px;
+    border-radius:50%;border:1.5px solid rgba(255,255,255,.25);background:rgba(24,18,24,.75);
+    color:var(--ink);font-size:18px;cursor:pointer;display:grid;place-items:center}
+
   /* calc overlay */
   #calcOverlay{position:fixed;inset:0;z-index:50;display:none;place-items:center;
     background:rgba(18,12,15,.62);backdrop-filter:blur(6px)}
@@ -367,6 +405,12 @@
     </div>
     <p class="print-note noprint">«Скачать PDF» → в окне печати выбери «Сохранить как PDF».</p>
   </section>
+</div>
+
+<!-- Photo lightbox -->
+<div id="photoLb" class="noprint">
+  <button id="lbClose" aria-label="Закрыть">✕</button>
+  <img id="lbImg" src="" alt="">
 </div>
 
 <!-- Calculating overlay -->
@@ -523,11 +567,9 @@ function loadProgress(){
 function clearProgress(){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
 
 /* ---------- SCREENS (плоский список карточек) ---------- */
-const SCREENS = [{type:'intro'},{type:'ctype'}];
-BAG.forEach((b,i)=>SCREENS.push({type:'bag', item:b, i}));
-SKILLS.forEach((s,i)=>SCREENS.push({type:'skill', skill:s, i}));
-SCREENS.push({type:'wheel'});
+const SCREENS = [{type:'intro'},{type:'ctype'},{type:'bagHave'},{type:'bagFit'},{type:'skills'}];
 let idx = 0;
+const anyHave=()=>BAG.some(b=>state.bag[b.key].has==='есть');
 
 const host = document.getElementById('cardHost');
 const stageLbl = document.getElementById('stageLbl');
@@ -537,17 +579,18 @@ const readyChip = document.getElementById('readyChip');
 function stageLabel(sc){
   if(sc.type==='intro') return 'Диагностика макияжа';
   if(sc.type==='ctype') return 'Шаг 1 · Цветотип';
-  if(sc.type==='bag') return `Шаг 2 · Косметичка ${sc.i+1} из ${BAG.length}`;
-  if(sc.type==='skill') return `Шаг 3 · Навыки ${sc.i+1} из ${SKILLS.length}`;
-  return 'Твоё колесо баланса';
+  if(sc.type==='bagHave') return 'Шаг 2 · Косметичка';
+  if(sc.type==='bagFit') return 'Шаг 2 · Что из этого твоё';
+  return 'Шаг 3 · Навыки и колесо';
 }
 function updateChrome(){
   const sc=SCREENS[idx];
   stageLbl.textContent = stageLabel(sc);
   document.getElementById('progFill').style.width = (idx/SCREENS.length*100)+'%';
   backBtn.classList.toggle('hid', idx===0);
-  readyChip.classList.toggle('hidden', sc.type!=='bag');
-  if(sc.type==='bag') updateReadiness();
+  const isBag = sc.type==='bagHave'||sc.type==='bagFit';
+  readyChip.classList.toggle('hidden', !isBag);
+  if(isBag) updateReadiness();
 }
 
 /* ---------- CARD TRANSITIONS ---------- */
@@ -561,6 +604,7 @@ function renderCard(dir){ // dir: 1 вперёд, -1 назад, 0 без ани
   bindCard(card, sc);
   updateChrome();
   saveProgress();
+  window.scrollTo({top:0});
   if(dir!==0) requestAnimationFrame(()=>requestAnimationFrame(()=>{
     card.classList.remove('enter-r','enter-l');
   }));
@@ -571,7 +615,11 @@ function goNext(){
   if(card) card.classList.add('fly-l');
   setTimeout(()=>{
     animating=false;
-    if(idx < SCREENS.length-1){ idx++; renderCard(1); }
+    if(idx < SCREENS.length-1){
+      idx++;
+      if(SCREENS[idx].type==='bagFit' && !anyHave()) idx++;  // нечего проверять — пропускаем
+      renderCard(1);
+    }
     else finishQuiz();
   }, 330);
 }
@@ -579,7 +627,12 @@ function goBack(){
   if(animating || idx===0) return; animating=true;
   const card=host.firstElementChild;
   if(card) card.classList.add('fly-r');
-  setTimeout(()=>{ animating=false; idx--; renderCard(-1); }, 330);
+  setTimeout(()=>{
+    animating=false;
+    idx--;
+    if(SCREENS[idx].type==='bagFit' && !anyHave()) idx--;
+    renderCard(-1);
+  }, 330);
 }
 backBtn.onclick=()=>{ tick(420); goBack(); };
 
@@ -587,9 +640,9 @@ backBtn.onclick=()=>{ tick(420); goBack(); };
 function buildCard(sc){
   if(sc.type==='intro') return introTpl();
   if(sc.type==='ctype') return ctypeTpl();
-  if(sc.type==='bag') return bagTpl(sc.item);
-  if(sc.type==='skill') return skillTpl(sc.skill);
-  return wheelTpl();
+  if(sc.type==='bagHave') return bagHaveTpl();
+  if(sc.type==='bagFit') return bagFitTpl();
+  return skillsTpl();
 }
 
 function introTpl(){
@@ -598,7 +651,7 @@ function introTpl(){
     <h2>Диагностика твоего макияжа</h2>
     <p class="sub">Пройди короткий тест — и узнай, что именно мешает твоему мейку выглядеть идеально.</p>
     <ul class="intro-list">
-      <li>Займёт около 3 минут</li>
+      <li>Займёт меньше 2 минут</li>
       <li>Разберём косметичку и 9 ключевых навыков</li>
       <li>В конце — персональный план: что подтянуть в первую очередь</li>
     </ul>
@@ -629,61 +682,57 @@ function ctypeTpl(){
     </div>`;
 }
 
-function bagTpl(b){
-  const s=state.bag[b.key];
+function bagHaveTpl(){
   return `
     <span class="qtag">Косметичка</span>
-    <h2>${b.name}${b.base?'<em class="base-tag">основа</em>':''}</h2>
-    ${b.hint?`<p class="hint">${b.hint}</p>`:''}
-    <p class="sub" style="margin-bottom:14px">Есть в твоей косметичке?</p>
-    <div class="answers row">
-      <button class="abtn${s.has==='есть'?' picked-dim':''}" data-good="1" data-has="есть">Есть</button>
-      <button class="abtn${s.has==='нет'?' picked-dim':''}" data-good="0" data-has="нет">Нет</button>
+    <h2>Что есть в твоей косметичке?</h2>
+    <p class="sub" style="margin-bottom:16px">Просто тапай, как по чек-листу. Чего нет — пропускай.</p>
+    <div class="chips">
+      ${BAG.map(b=>`<div class="chip${state.bag[b.key].has==='есть'?' on':''}" data-k="${b.key}">
+        <b>${b.name}${b.base?'<em class="base-tag">основа</em>':''}</b>
+        ${b.hint?`<small>${b.hint}</small>`:''}
+      </div>`).join('')}
     </div>
-    <div class="qphase2 ${s.has==='есть'?'':'hidden'}" id="phase2">
-      <p class="qq">А точно подходит тебе?</p>
-      <div class="answers row">
-        <button class="abtn${s.fit==='подходит'?' picked-dim':''}" data-good="1" data-fit="подходит">Подходит</button>
-        <button class="abtn${s.fit==='не знаю'?' picked-dim':''}" data-good="0" data-fit="не знаю">Не знаю</button>
-      </div>
-    </div>`;
+    <p class="chips-count" id="chipsCount"></p>
+    <button class="btn btn-primary" id="bagNext">Дальше →</button>`;
+}
+function bagFitTpl(){
+  const have=BAG.filter(b=>state.bag[b.key].has==='есть');
+  return `
+    <span class="qtag">Косметичка</span>
+    <h2>А что из этого точно твоё?</h2>
+    <p class="sub" style="margin-bottom:16px">Отметь то, в чём уверена: подходит по оттенку и текстуре. Сомневаешься — не отмечай, это нормально.</p>
+    <div class="chips">
+      ${have.map(b=>`<div class="chip good${state.bag[b.key].fit==='подходит'?' on':''}" data-k="${b.key}">
+        <b>${b.name}${b.base?'<em class="base-tag">основа</em>':''}</b>
+        ${b.hint?`<small>${b.hint}</small>`:''}
+      </div>`).join('')}
+    </div>
+    <p class="chips-count" id="chipsCount"></p>
+    <button class="btn btn-primary" id="bagNext">Дальше →</button>`;
 }
 
 const VALCOL =['#e5484d','#f0763a','#f2c14e','#8cc46a','#4faf72'];
 const VALGLOW=['rgba(229,72,77,.5)','rgba(240,118,58,.5)','rgba(242,193,78,.5)','rgba(140,196,106,.5)','rgba(79,175,114,.5)'];
 
-function skillTpl(sk){
-  const v=state.skills[sk.key];
+function skillsTpl(){
   return `
     <span class="qtag">Навыки</span>
-    <h2>${sk.label}</h2>
-    <p class="sub">${sk.hint}</p>
-    <div class="sl-big">
-      <div class="sl-value" id="slVal">
-        <b style="color:${VALCOL[v-1]}">${v}</b>
-        <span style="color:${VALCOL[v-1]}">${SKILL_LABELS[sk.key][v-1]}</span>
-      </div>
-      <input type="range" min="1" max="5" step="1" value="${v}" id="slRange"
-        style="--p:${(v-1)/4*100}%;--c:${VALCOL[v-1]};--cg:${VALGLOW[v-1]}">
-      <div class="sl-ends"><span>совсем нет</span><span>на максимум</span></div>
+    <h2>Оцени себя честно</h2>
+    <p class="sub" style="margin-bottom:14px">1 — совсем нет, 5 — на максимум. Двигай ползунки — колесо меняется вместе с тобой.</p>
+    <div class="wheel-sticky">
+      <svg id="radar" viewBox="0 0 320 300"></svg>
+      <div class="wheel-react" id="wheelReact"></div>
     </div>
-    <button class="btn btn-primary" id="slNext">Дальше →</button>`;
-}
-
-function wheelTpl(){
-  return `
-    <span class="qtag">Колесо баланса</span>
-    <h2>Твоё колесо навыков</h2>
-    <p class="sub">Вот как выглядят твои ответы на одном круге — провалы видно сразу.</p>
-    <div class="wheel-center">
-      <svg id="radar" viewBox="0 0 320 300" width="100%" style="max-width:320px"></svg>
-      <div class="radar-legend">
-        <div><span class="ln"></span> Ты сейчас</div>
-        <div><span class="ln goal"></span> Уровень мастерицы</div>
-      </div>
-    </div>
-    <div class="wheel-react" id="wheelReact"></div>
-    <button class="btn btn-primary" id="showResult">Показать мой результат →</button>`;
+    <div>${SKILLS.map(sk=>{
+      const v=state.skills[sk.key];
+      return `<div class="slrow">
+        <div class="top"><b>${sk.label}</b><span id="sv_${sk.key}" style="color:${VALCOL[v-1]}">${v} · ${SKILL_LABELS[sk.key][v-1]}</span></div>
+        <div class="slhint">${sk.hint}</div>
+        <input type="range" min="1" max="5" step="1" value="${v}" data-k="${sk.key}"
+          style="--p:${(v-1)/4*100}%;--c:${VALCOL[v-1]};--cg:${VALGLOW[v-1]}">
+      </div>`;}).join('')}</div>
+    <div style="margin-top:20px"><button class="btn btn-primary" id="slNext">Показать мой результат →</button></div>`;
 }
 
 /* ---------- CARD BINDINGS ---------- */
@@ -708,64 +757,70 @@ function bindCard(card, sc){
     });
   }
 
-  if(sc.type==='bag'){
-    const b=sc.item, s=state.bag[b.key];
-    const phase2=card.querySelector('#phase2');
-    card.querySelectorAll('[data-has]').forEach(el=>el.onclick=()=>{
-      if(animating) return;
-      const v=el.dataset.has;
-      s.has=v;
-      card.querySelectorAll('[data-has]').forEach(x=>x.classList.remove('picked','picked-dim'));
-      el.classList.add('picked');
+  if(sc.type==='bagHave'){
+    const cnt=card.querySelector('#chipsCount');
+    const upd=()=>{
+      const n=BAG.filter(b=>state.bag[b.key].has==='есть').length;
+      cnt.innerHTML=n?`Выбрано <b>${n}</b> из ${BAG.length}`:'Отметь всё, что есть — даже начатое';
       updateReadiness();
-      if(v==='нет'){
-        s.fit=null;
-        phase2.classList.add('hidden');
-        tick(430);
-        setTimeout(goNext, 380);
-      }else{
-        tick(720);
-        saveProgress();
-        phase2.classList.remove('hidden');
-        card.querySelectorAll('[data-fit]').forEach(x=>x.classList.remove('picked','picked-dim'));
-        if(s.fit) card.querySelector(`[data-fit="${s.fit}"]`).classList.add('picked-dim');
-      }
-    });
-    card.querySelectorAll('[data-fit]').forEach(el=>el.onclick=()=>{
-      if(animating || s.has!=='есть') return;
-      s.fit=el.dataset.fit;
-      card.querySelectorAll('[data-fit]').forEach(x=>x.classList.remove('picked','picked-dim'));
-      el.classList.add('picked');
-      updateReadiness();
-      tick(s.fit==='подходит'?760:560);
-      setTimeout(goNext, 380);
-    });
-  }
-
-  if(sc.type==='skill'){
-    const sk=sc.skill;
-    const range=card.querySelector('#slRange');
-    const valEl=card.querySelector('#slVal');
-    range.oninput=()=>{
-      const v=+range.value;
-      state.skills[sk.key]=v;
-      valEl.innerHTML=`<b style="color:${VALCOL[v-1]}">${v}</b><span style="color:${VALCOL[v-1]}">${SKILL_LABELS[sk.key][v-1]}</span>`;
-      range.style.setProperty('--p',(v-1)/4*100+'%');
-      range.style.setProperty('--c',VALCOL[v-1]);
-      range.style.setProperty('--cg',VALGLOW[v-1]);
-      saveProgress();
-      tick(360+v*70,0.045,0.05);
     };
-    card.querySelector('#slNext').onclick=()=>{ tick(620); goNext(); };
+    card.querySelectorAll('.chip').forEach(el=>el.onclick=()=>{
+      const s=state.bag[el.dataset.k];
+      const on=s.has!=='есть';
+      s.has=on?'есть':'нет';
+      if(!on) s.fit=null;
+      el.classList.toggle('on',on);
+      tick(on?720:430); upd(); saveProgress();
+    });
+    upd();
+    card.querySelector('#bagNext').onclick=()=>{
+      BAG.forEach(b=>{const s=state.bag[b.key]; if(s.has!=='есть'){s.has='нет'; s.fit=null;}});
+      tick(620); goNext();
+    };
   }
 
-  if(sc.type==='wheel'){
+  if(sc.type==='bagFit'){
+    const have=BAG.filter(b=>state.bag[b.key].has==='есть');
+    const cnt=card.querySelector('#chipsCount');
+    const upd=()=>{
+      const n=have.filter(b=>state.bag[b.key].fit==='подходит').length;
+      cnt.innerHTML=`Уверена в <b>${n}</b> из ${have.length}`;
+      updateReadiness();
+    };
+    card.querySelectorAll('.chip').forEach(el=>el.onclick=()=>{
+      const s=state.bag[el.dataset.k];
+      const on=s.fit!=='подходит';
+      s.fit=on?'подходит':'не знаю';
+      el.classList.toggle('on',on);
+      tick(on?760:520); upd(); saveProgress();
+    });
+    upd();
+    card.querySelector('#bagNext').onclick=()=>{
+      have.forEach(b=>{const s=state.bag[b.key]; if(s.fit!=='подходит') s.fit='не знаю';});
+      tick(620); goNext();
+    };
+  }
+
+  if(sc.type==='skills'){
     animateRadarIn();
     setTimeout(updateWheelReact, 900);
-    card.querySelector('#showResult').onclick=()=>{
-      tick(620);
-      runCalc(()=>showResult());
-    };
+    card.querySelectorAll('input[type=range]').forEach(range=>{
+      range.oninput=()=>{
+        const k=range.dataset.k, v=+range.value;
+        state.skills[k]=v;
+        const sv=card.querySelector('#sv_'+k);
+        sv.textContent=v+' · '+SKILL_LABELS[k][v-1];
+        sv.style.color=VALCOL[v-1];
+        range.style.setProperty('--p',(v-1)/4*100+'%');
+        range.style.setProperty('--c',VALCOL[v-1]);
+        range.style.setProperty('--cg',VALGLOW[v-1]);
+        radarFill=1; drawRadar();
+        updateWheelReact();
+        saveProgress();
+        tick(360+v*70,0.045,0.05);
+      };
+    });
+    card.querySelector('#slNext').onclick=()=>{ tick(620); runCalc(()=>showResult()); };
   }
 }
 
@@ -1355,6 +1410,45 @@ document.getElementById('soundToggle').onclick=()=>{
   document.getElementById('soundToggle').textContent=soundOn?'🔊':'🔈';
   if(soundOn) tick(660);
 };
+
+/* ---------- PHOTO LIGHTBOX ---------- */
+const photoLb=document.getElementById('photoLb'), lbImg=document.getElementById('lbImg');
+document.addEventListener('click',e=>{
+  const im=e.target.closest('.ba img');
+  if(im){ lbImg.src=im.src; lbImg.alt=im.alt; photoLb.classList.add('on'); tick(600); return; }
+  if(e.target===photoLb||e.target===lbImg||e.target.closest('#lbClose')){
+    photoLb.classList.remove('on'); lbImg.src='';
+  }
+});
+
+/* ---------- ВЫХОД ИЗ ВСТРОЕННОГО БРАУЗЕРА TELEGRAM ---------- */
+/* внутри тг-браузера легко случайно свайпнуть и потерять прогресс —
+   пробуем открыть системный браузер, иначе показываем подсказку */
+(function(){
+  const ua=navigator.userAgent||'';
+  const inTg = typeof window.TelegramWebviewProxy!=='undefined' || /Telegram/i.test(ua);
+  if(!inTg) return;
+  try{
+    if(sessionStorage.getItem('tgEscapeTried')) return;
+    sessionStorage.setItem('tgEscapeTried','1');
+  }catch(e){}
+  const full=location.href;
+  if(/android/i.test(ua)){
+    location.href='intent://'+location.host+location.pathname+location.search+
+      '#Intent;scheme=https;action=android.intent.action.VIEW;end';
+  }else{
+    location.href='x-safari-'+full;
+  }
+  // если редирект не сработал — мягкая подсказка сверху
+  setTimeout(()=>{
+    const b=document.createElement('div');
+    b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:80;background:var(--grad-wine);color:#1a1014;'+
+      'padding:12px 44px 12px 16px;font-size:13.5px;line-height:1.4;font-family:Jost,sans-serif;font-weight:500';
+    b.innerHTML='Чтобы ничего не потерялось, открой страницу в браузере: нажми <b>⋮</b> (или <b>⋯</b>) сверху и выбери «Открыть в браузере».'+
+      '<span style="position:absolute;top:8px;right:12px;font-size:18px;cursor:pointer" onclick="this.parentNode.remove()">✕</span>';
+    document.body.appendChild(b);
+  }, 1500);
+})();
 
 /* ---------- NO ZOOM (iOS Safari игнорирует метатег) ---------- */
 ['gesturestart','gesturechange','gestureend'].forEach(ev=>
