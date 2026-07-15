@@ -228,7 +228,14 @@
     padding:8px 20px 12px;margin:0 -26px 14px;
     border-bottom:1px solid var(--line);
     box-shadow:0 16px 20px -12px rgba(0,0,0,.55)}
-  .wheel-sticky svg{width:min(232px,62vw);height:auto;display:block}
+  .wheel-row{display:flex;align-items:center;justify-content:center;gap:6px}
+  .wheel-sticky svg{width:min(206px,55vw);height:auto;display:block;flex-shrink:0}
+  .radar-legend{display:flex;flex-direction:column;gap:9px;max-width:98px;text-align:left}
+  .radar-legend div{display:flex;gap:6px;align-items:flex-start;color:var(--muted);
+    font-size:10.5px;line-height:1.3}
+  .radar-legend .ln{width:22px;height:8px;border-radius:3px;flex-shrink:0;margin-top:3px;
+    background:linear-gradient(90deg,#e5484d,#f2c14e,#4faf72)}
+  .radar-legend .ln.goal{height:0;background:none;border-top:2px dashed #f0a4bb;border-radius:0}
   .wheel-react{margin:2px 0 0;min-height:42px;text-align:center;color:var(--wine-d);
     font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;opacity:0;transition:opacity .4s;
     line-height:1.3;padding:0 10px;display:flex;align-items:center;justify-content:center}
@@ -745,7 +752,13 @@ function skillsTpl(){
     <h2>Оцени себя честно</h2>
     <p class="sub" style="margin-bottom:14px">Двигай ползунки и выбирай не «как ощущается», а как есть на деле — план будет точнее. Колесо меняется вместе с тобой.</p>
     <div class="wheel-sticky">
-      <svg id="radar" viewBox="0 0 320 300"></svg>
+      <div class="wheel-row">
+        <div class="radar-legend">
+          <div><span class="ln goal"></span>возможный уровень любой девушки</div>
+          <div><span class="ln"></span>твой уровень сейчас</div>
+        </div>
+        <svg id="radar" viewBox="0 0 320 300"></svg>
+      </div>
       <div class="wheel-react" id="wheelReact"></div>
     </div>
     <div>${SKILLS.map(sk=>{
