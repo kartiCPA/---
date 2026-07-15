@@ -840,8 +840,7 @@ function bindCard(card, sc){
   }
 
   if(sc.type==='skills'){
-    animateRadarIn();
-    setTimeout(updateWheelReact, 900);
+    animateRadarIn(updateWheelReact);
     card.querySelectorAll('input[type=range]').forEach(range=>{
       range.oninput=()=>{
         const k=range.dataset.k, v=+range.value;
@@ -911,7 +910,7 @@ function drawRadar(){
   h+=`<circle cx="${cx}" cy="${cy}" r="8" fill="#181218" stroke="#352a31" stroke-width="1.5"/>`;
   svg.innerHTML=h;
 }
-function animateRadarIn(){
+function animateRadarIn(done){
   radarFill=0; drawRadar();
   const t0=performance.now()+120, dur=1600;
   (function f(t){
@@ -920,6 +919,7 @@ function animateRadarIn(){
     radarFill=1-Math.pow(1-k,3);
     drawRadar();
     if(k<1) requestAnimationFrame(f);
+    else if(done) done();   // колесо доросло — можно показывать вывод
   })(performance.now());
 }
 function updateWheelReact(){
