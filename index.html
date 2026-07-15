@@ -47,6 +47,8 @@
     background-attachment:fixed;
     min-height:100vh;
     min-height:100dvh;
+    overflow-x:hidden;
+    overflow-x:clip;   /* clip не ломает position:sticky, в отличие от hidden на контейнере */
   }
   h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;letter-spacing:.3px}
 
@@ -73,7 +75,7 @@
   /* ===== Quiz stage ===== */
   #stage{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
     align-items:center;justify-content:center;
-    padding:76px 18px calc(26px + env(safe-area-inset-bottom));overflow:hidden}
+    padding:76px 18px calc(26px + env(safe-area-inset-bottom))}
   #cardHost{width:100%;max-width:480px;perspective:900px}
 
   .readychip{max-width:480px;width:100%;margin:0 auto 14px;
@@ -147,11 +149,11 @@
   .chips-count b{color:var(--wine-d)}
 
   /* compact skill sliders (все на одной странице) */
-  .slrow{margin-bottom:15px}
-  .slrow .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:1px}
-  .slrow .top b{font-size:15.5px;font-weight:500}
-  .slrow .top span{font-size:12.5px;font-weight:600;transition:color .2s;text-align:right;white-space:nowrap}
-  .slhint{font-size:12px;color:var(--muted);margin:0 0 7px;font-weight:300;line-height:1.3}
+  .slrow{margin-bottom:18px}
+  .slrow .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:2px}
+  .slrow .top b{font-size:17.5px;font-weight:500}
+  .slrow .top span{font-size:14.5px;font-weight:600;transition:color .2s;text-align:right;white-space:nowrap}
+  .slhint{font-size:14px;color:var(--muted);margin:0 0 8px;font-weight:300;line-height:1.35}
   .slrow input[type=range]{margin:0;height:8px}
   .slrow input[type=range]::-webkit-slider-thumb{width:26px;height:26px;border-width:3px}
   .slrow input[type=range]::-moz-range-thumb{width:26px;height:26px;border-width:3px}
@@ -1439,15 +1441,6 @@ document.addEventListener('click',e=>{
   }else{
     location.href='x-safari-'+full;
   }
-  // если редирект не сработал — мягкая подсказка сверху
-  setTimeout(()=>{
-    const b=document.createElement('div');
-    b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:80;background:var(--grad-wine);color:#1a1014;'+
-      'padding:12px 44px 12px 16px;font-size:13.5px;line-height:1.4;font-family:Jost,sans-serif;font-weight:500';
-    b.innerHTML='Чтобы ничего не потерялось, открой страницу в браузере: нажми <b>⋮</b> (или <b>⋯</b>) сверху и выбери «Открыть в браузере».'+
-      '<span style="position:absolute;top:8px;right:12px;font-size:18px;cursor:pointer" onclick="this.parentNode.remove()">✕</span>';
-    document.body.appendChild(b);
-  }, 1500);
 })();
 
 /* ---------- NO ZOOM (iOS Safari игнорирует метатег) ---------- */
