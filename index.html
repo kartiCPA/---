@@ -59,7 +59,8 @@
   .stagebar{position:fixed;top:4px;left:0;right:0;z-index:29;
     display:flex;align-items:center;justify-content:space-between;gap:10px;
     padding:10px max(14px,env(safe-area-inset-right)) 10px max(14px,env(safe-area-inset-left));
-    pointer-events:none}
+    pointer-events:none;
+    background:rgba(13,10,12,.92);backdrop-filter:blur(8px)}
   .stagebar>*{pointer-events:auto}
   .backbtn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);
     background:var(--card);color:var(--muted);font-size:18px;cursor:pointer;
@@ -170,7 +171,8 @@
   .ctype h3{margin:0 0 4px;font-size:23px}
   .ctype p{margin:0 0 11px;font-size:13.5px;color:var(--muted);line-height:1.4}
   .swatches{display:flex;gap:7px}
-  .swatches span{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+  .swatches span{width:26px;height:26px;flex-shrink:0;border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
   .ctype-dunno{border-style:dashed}
   .ctype-dunno p{margin-bottom:0}
   @media(min-width:430px){.ctype-dunno{grid-column:1/-1}}
@@ -220,13 +222,15 @@
   .hidden{display:none!important}
 
   /* sticky wheel on skills screen */
-  .wheel-sticky{position:sticky;top:62px;z-index:5;display:flex;flex-direction:column;align-items:center;
-    background:linear-gradient(180deg,var(--card) 78%,transparent);
-    padding:2px 0 16px;margin:0 -6px 10px}
-  .wheel-sticky svg{width:min(238px,64vw);height:auto;display:block}
-  .wheel-react{margin:2px 0 0;min-height:24px;text-align:center;color:var(--wine-d);
+  .wheel-sticky{position:sticky;top:64px;z-index:5;display:flex;flex-direction:column;align-items:center;
+    background:var(--card);
+    padding:8px 20px 12px;margin:0 -26px 14px;
+    border-bottom:1px solid var(--line);
+    box-shadow:0 16px 20px -12px rgba(0,0,0,.55)}
+  .wheel-sticky svg{width:min(232px,62vw);height:auto;display:block}
+  .wheel-react{margin:2px 0 0;min-height:42px;text-align:center;color:var(--wine-d);
     font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;opacity:0;transition:opacity .4s;
-    line-height:1.3;padding:0 10px}
+    line-height:1.3;padding:0 10px;display:flex;align-items:center;justify-content:center}
   .wheel-react.show{opacity:1}
   #radar .vpoly{transform-box:fill-box;transform-origin:center;animation:breathe 4.5s ease-in-out infinite}
 
@@ -1122,7 +1126,7 @@ function renderResult(){
     let inner='<ul class="pill-list">';
     crit.forEach(x=>inner+=`<li><span class="ic ic-crit">!</span><span class="txt"><b>${x.s.label}</b><span class="t">${x.t}</span></span>${fixBox('skill',x.s.key)}</li>`);
     inner+='</ul>';
-    html+=clpsBlock('🎯 Что исправить в первую очередь', crit.length, inner, true);
+    html+=clpsBlock('🎯 Что исправить в первую очередь', crit.length, inner, false);
   }
   if(grow.length){
     let inner='<ul class="pill-list">';
@@ -1210,7 +1214,7 @@ function renderResult(){
         <button class="btn btn-primary" id="leadSend">Узнать подробнее о программе</button>
       </div>
       <p class="lead-err" id="leadErr"></p>
-      <p class="lead-note">Никакого спама — только по твоей диагностике.</p>
+      <p class="outro-sub" style="margin-top:16px">Если ты всё-таки решишься — я гарантирую: это будет одно из самых классных твоих решений. Мы ведь девочки — такие девочки…<br>А я, в свою очередь, не отпущу тебя без результата.</p>
     </div></div>`;
 
   // поделиться квизом с подругой (ссылка чистая — у неё диагностика начнётся с нуля)
@@ -1219,12 +1223,6 @@ function renderResult(){
     <p>Пусть тоже пройдёт диагностику — интересно же, какой результат получится у неё.</p>
     <button class="btn btn-ghost" id="shareBtn">Поделиться диагностикой</button>
   </div></div>`;
-
-  // тёплое завершение
-  html+=`<div class="res-block noprint">
-    <p class="outro">Спасибо за доверие 🤍</p>
-    <p class="outro-sub">Если ты всё-таки решишься — я гарантирую: это будет одно из самых классных твоих решений. Мы ведь девочки — такие девочки…<br>А я, в свою очередь, не отпущу тебя без результата.</p>
-  </div>`;
 
   document.getElementById('resultBody').innerHTML=html;
 
@@ -1339,7 +1337,8 @@ function bindLead(ctx){
     <div class="lead-ok">
       <div class="big">💌</div>
       <h3>Заявка отправлена!</h3>
-      <p>Я скоро свяжусь с тобой${state.name?', '+state.name:''}, и познакомлю тебя с программой моего онлайн-обучения 🤍</p>
+      <p>Я скоро свяжусь с тобой${state.name?', '+state.name:''}, и познакомлю тебя с программой моего онлайн-обучения.</p>
+      <p class="outro" style="margin-top:14px">Спасибо за доверие 🤍</p>
     </div>`;
   async function submit(btn, err, contactLines){
     err.style.display='none';
