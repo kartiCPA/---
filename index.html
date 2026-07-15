@@ -302,9 +302,11 @@
   .potential{background:linear-gradient(180deg,#221824,#181219);border:1px solid rgba(244,169,192,.18);
     border-radius:16px;padding:22px 20px;text-align:center;box-shadow:var(--glow)}
   .pot-row{display:flex;align-items:center;justify-content:center;gap:20px;margin:14px 0 6px}
-  .pot{display:flex;flex-direction:column;gap:2px}
+  .pot{display:flex;flex-direction:column;gap:2px;align-self:flex-start}
   .pot span{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;line-height:1}
-  .pot small{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .pot small{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .pot-row{align-items:flex-start;flex-wrap:wrap;gap:14px}
+  .pot-row .pot-arrow{margin-top:6px}
   .pot-arrow{font-size:30px;color:var(--wine);font-weight:300}
   .pot.far,.pot-arrow.far{display:none}
   .pot-arrow.far.show{display:block;animation:phaseIn .45s ease both}
@@ -1201,7 +1203,7 @@ function renderResult(){
         <div class="pot-arrow">→</div>
         <div class="pot"><span id="potVal" style="color:${scoreColor(avg)}">${avg.toFixed(1)}</span><small>через месяц</small></div>
         <div class="pot-arrow far" id="potArrow2">→</div>
-        <div class="pot far" id="potFar"><span style="color:#3fa564">5.0</span><small>ещё через 1–2 мес</small></div>
+        <div class="pot far" id="potFar"><span style="color:#3fa564">5.0</span><small>ещё 1–2 мес</small></div>
       </div>
       <button id="checkAll" class="check-all">✨ Узнать оценку после исправлений</button>
     </div></div>`;
