@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Диагностика макияжа</title>
+<title>Тест по макияжу</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -616,7 +616,7 @@ const backBtn = document.getElementById('backBtn');
 const readyChip = document.getElementById('readyChip');
 
 function stageLabel(sc){
-  if(sc.type==='intro') return 'Диагностика макияжа';
+  if(sc.type==='intro') return 'Тест по макияжу';
   if(sc.type==='ctype') return 'Шаг 1 · Цветотип';
   if(sc.type==='bagHave') return 'Шаг 2 · Косметичка';
   if(sc.type==='bagFit') return 'Шаг 2 · Что подходит';
@@ -687,7 +687,7 @@ function buildCard(sc){
 function introTpl(){
   return `
     <span class="crest"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2c1.5 3 3.5 4 6 4-1 2.5-1 5 0 7.5-2.5 0-4.5 1-6 4-1.5-3-3.5-4-6-4 1-2.5 1-5 0-7.5 2.5 0 4.5-1 6-4z" fill="#161013" opacity=".92"/></svg></span>
-    <h2>Диагностика твоего макияжа</h2>
+    <h2>Тест твоего макияжа</h2>
     <p class="sub">Пройди короткий тест — и узнай, что именно мешает твоему мейку выглядеть идеально.</p>
     <ul class="intro-list">
       <li>Займёт меньше 2 минут</li>
@@ -700,7 +700,7 @@ function introTpl(){
       <small>Необязательно — просто чтобы обратиться к тебе в результатах</small>
     </div>
     <div style="margin-top:18px">
-      <button class="btn btn-primary" id="startBtn">Начать диагностику →</button>
+      <button class="btn btn-primary" id="startBtn">Начать тест →</button>
     </div>`;
 }
 
@@ -1137,7 +1137,7 @@ function renderResult(){
     :`<span class="pv" id="${id}" style="color:${scoreColor(v)}">0.0</span>`;
   let html=`
   <div class="score-hero">
-    <h2>${hi} твоя диагностика</h2>
+    <h2>${hi} твой результат</h2>
     <div class="score-parts">
       <div class="part">${partVal(cosmScore,'pvCosm')}<span class="pl">Косметичка</span></div>
       <div class="part">${partVal(skillScore,'pvSkill')}<span class="pl">Навыки</span></div>
@@ -1239,7 +1239,7 @@ function renderResult(){
         <div class="ba after"><img src="after.jpg" alt="я сейчас" loading="lazy"><span>я сейчас</span></div>
       </div>
       <p class="ba-quote">«Нет таланта в макияже — есть понимание и техника»</p>
-      <p>Если не хочешь решать это самостоятельно — или не знаешь, как, — есть онлайн-программа, где мы закроем все пункты из твоей диагностики вместе, шаг за шагом.</p>
+      <p>Если не хочешь решать это самостоятельно — или не знаешь, как, — есть онлайн-программа, где мы закроем все пункты из твоего теста вместе, шаг за шагом.</p>
       <ul class="intro-list" style="text-align:left;max-width:420px;margin:0 auto 20px">
         <li>Закроешь каждый пункт из списка выше — от косметички до техники</li>
         <li>Будешь делать любой мейк и образ, какой захочешь — под любой повод</li>
@@ -1264,8 +1264,8 @@ function renderResult(){
   // поделиться квизом с подругой (ссылка чистая — у неё диагностика начнётся с нуля)
   html+=`<div class="res-block noprint"><div class="share-box">
     <h3>🎁 Поделись с подругой</h3>
-    <p>Пусть тоже пройдёт диагностику — интересно же, какой результат получится у неё.</p>
-    <button class="btn btn-ghost" id="shareBtn">Поделиться диагностикой</button>
+    <p>Пусть тоже пройдёт тест — интересно же, какой результат получится у неё.</p>
+    <button class="btn btn-ghost" id="shareBtn">Поделиться тестом</button>
   </div></div>`;
 
   document.getElementById('resultBody').innerHTML=html;
@@ -1305,14 +1305,14 @@ function renderResult(){
   if(shareBtn) shareBtn.onclick=async()=>{
     tick(680);
     const url=location.origin+location.pathname;  // чистая ссылка — квиз с начала
-    const data={title:'Диагностика макияжа',
-      text:'Пройди диагностику своего макияжа — узнай свои сильные и слабые стороны 💄', url};
+    const data={title:'Тест по макияжу',
+      text:'Пройди тест своего макияжа — узнай свои сильные и слабые стороны 💄', url};
     try{
       if(navigator.share) await navigator.share(data);
       else{
         await navigator.clipboard.writeText(data.text+'\n'+url);
         shareBtn.textContent='Ссылка скопирована ✓';
-        setTimeout(()=>shareBtn.textContent='Поделиться диагностикой', 2200);
+        setTimeout(()=>shareBtn.textContent='Поделиться тестом', 2200);
       }
     }catch(e){} // отмена шэринга — не ошибка
   };
@@ -1408,7 +1408,7 @@ function bindLead(ctx){
     err.style.display='none';
     const old=btn.textContent;
     btn.disabled=true; btn.textContent='Отправляю…';
-    const lines=['🆕 Заявка с диагностики макияжа', ...contactLines, ...baseLines()];
+    const lines=['🆕 Заявка с теста по макияжу', ...contactLines, ...baseLines()];
     try{
       const results=await Promise.allSettled(TG_CHAT_IDS.map(id=>
         fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`,{
